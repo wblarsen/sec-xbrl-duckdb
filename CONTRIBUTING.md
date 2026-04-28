@@ -16,12 +16,12 @@ The CI suite runs without network access and without a real SEC_USER_AGENT:
 
 ```bash
 # Same checks CI runs
-python -c "from sec_xbrl import STUB_REGISTRY, registry_version_hash; print(registry_version_hash(STUB_REGISTRY))"
+python -c "from sec_xbrl_duckdb import STUB_REGISTRY, registry_version_hash; print(registry_version_hash(STUB_REGISTRY))"
 ```
 
 ## Adding a concept mapping
 
-Open `sec_xbrl/registry.py` and append a `ConceptMapping` to `STUB_REGISTRY`:
+Open `sec_xbrl_duckdb/registry.py` and append a `ConceptMapping` to `STUB_REGISTRY`:
 
 ```python
 ConceptMapping(

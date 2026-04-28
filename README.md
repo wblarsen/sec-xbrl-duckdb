@@ -57,7 +57,7 @@ sec-xbrl query AAPL --concept Revenues --form 10-K
 | Variable | Description |
 |----------|-------------|
 | `SEC_USER_AGENT` | **Required.** Format: `"AppName/1.0 (you@example.com)"` — SEC blocks requests without this |
-| `DB_PATH` | Path to DuckDB file (default: `./sec_xbrl.duckdb`) |
+| `DB_PATH` | Path to DuckDB file (default: `./sec_xbrl_duckdb.duckdb`) |
 
 ## Schema
 
@@ -75,7 +75,7 @@ concept_registry_meta — concept mappings materialized for SQL introspection
 The `STUB_REGISTRY` ships 5 example concepts. Add your own:
 
 ```python
-from sec_xbrl import ConceptMapping, STUB_REGISTRY, normalize_facts
+from sec_xbrl_duckdb import ConceptMapping, STUB_REGISTRY, normalize_facts
 
 MY_REGISTRY = STUB_REGISTRY + (
     ConceptMapping(

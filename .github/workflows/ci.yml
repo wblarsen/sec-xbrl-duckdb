@@ -26,7 +26,7 @@ jobs:
       - name: Import smoke test
         run: |
           python -c "
-          from sec_xbrl import (
+          from sec_xbrl_duckdb import (
               XBRLFact, SECClient, init_db,
               ConceptMapping, STUB_REGISTRY,
               registry_version_hash, normalize_facts,
@@ -40,7 +40,7 @@ jobs:
       - name: Parser unit tests
         run: |
           python -c "
-          from sec_xbrl.parser import parse_companyfacts, parse_inline_xbrl, parse_xml_xbrl
+          from sec_xbrl_duckdb.parser import parse_companyfacts, parse_inline_xbrl, parse_xml_xbrl
 
           # companyfacts: minimal JSON
           data = {
@@ -82,7 +82,7 @@ jobs:
           print('inline XBRL parser OK')
 
           # dimension rule engine
-          from sec_xbrl.registry import apply_dimension_rule, ConceptMapping
+          from sec_xbrl_duckdb.registry import apply_dimension_rule, ConceptMapping
           mapping = ConceptMapping(
               output_column='revenue',
               xbrl_concepts=('Revenues',),

@@ -61,7 +61,7 @@ def _build_client():
 
 def _build_conn():
     from .db import init_db
-    path = os.getenv("DB_PATH", "./sec_xbrl.duckdb")
+    path = os.getenv("DB_PATH", "./sec_xbrl_duckdb.duckdb")
     return init_db(path)
 
 

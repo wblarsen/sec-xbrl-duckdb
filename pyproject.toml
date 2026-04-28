@@ -43,7 +43,7 @@ validate = [
 ]
 
 [project.scripts]
-sec-xbrl = "sec_xbrl.cli:main"
+sec-xbrl = "sec_xbrl_duckdb.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["sec_xbrl"]
+packages = ["sec_xbrl_duckdb"]
