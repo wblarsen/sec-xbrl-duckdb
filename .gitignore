@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# DuckDB databases
+*.duckdb
+*.duckdb.wal
+
+# Environment
+.env
+*.env.local
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp downloads / test artifacts
+*.txt.tmp
+/tmp/
