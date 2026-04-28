@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Import smoke test
+        run: |
+          python -c "
+          from sec_xbrl import (
+              XBRLFact, SECClient, init_db,
+              ConceptMapping, STUB_REGISTRY,
+              registry_version_hash, normalize_facts,
+          )
+          assert len(STUB_REGISTRY) >= 5, 'STUB_REGISTRY must have at least 5 concepts'
+          h = registry_version_hash(STUB_REGISTRY)
+          assert len(h) == 8, 'version hash must be 8 chars'
+          print('imports OK, registry version:', h)
+          "
+
+      - name: Parser unit tests
+        run: |
+          python -c "
+          from sec_xbrl.parser import parse_companyfacts, parse_inline_xbrl, parse_xml_xbrl
+
+          # companyfacts: minimal JSON
+          data = {
+              'cik': 320193,
+              'facts': {
+                  'us-gaap': {
+                      'Revenues': {
+                          'units': {
+                              'USD': [{
+                                  'end': '2023-09-30', 'start': '2022-10-01',
+                                  'val': 383285000000, 'accn': '0000320193-23-000106',
+                                  'fy': 2023, 'fp': 'FY', 'form': '10-K', 'filed': '2023-11-03',
+                              }]
+                          }
+                      }
+                  }
+              }
+          }
+          facts = parse_companyfacts(data)
+          assert len(facts) == 1
+          assert facts[0].local_name == 'Revenues'
+          assert facts[0].value_numeric == 383285000000.0
+          print('companyfacts parser OK')
+
+          # inline XBRL: minimal HTML
+          html = '''
+          <html>
+          <xbrli:context id=\"ctx1\">
+            <xbrli:period>
+              <xbrli:startDate>2023-01-01</xbrli:startDate>
+              <xbrli:endDate>2023-09-30</xbrli:endDate>
+            </xbrli:period>
+          </xbrli:context>
+          <ix:nonFraction name=\"us-gaap:Revenues\" contextRef=\"ctx1\" unitRef=\"USD\" decimals=\"-6\">383285</ix:nonFraction>
+          </html>
+          '''
+          facts = parse_inline_xbrl(html, 'ACC-001', '0000320193')
+          assert any(f.local_name == 'Revenues' for f in facts)
+          print('inline XBRL parser OK')
+
+          # dimension rule engine
+          from sec_xbrl.registry import apply_dimension_rule, ConceptMapping
+          mapping = ConceptMapping(
+              output_column='revenue',
+              xbrl_concepts=('Revenues',),
+              dimension_rule='prefer_null',
+          )
+          candidates = [
+              {'local_name': 'Revenues', 'namespace': 'us-gaap', 'value_numeric': 100.0, 'dimension_member_1': None, 'dimension_member_2': None},
+              {'local_name': 'Revenues', 'namespace': 'us-gaap', 'value_numeric': 999.0, 'dimension_member_1': 'ProductLine', 'dimension_member_2': None},
+          ]
+          result = apply_dimension_rule(mapping, candidates)
+          assert result == 100.0, f'prefer_null should pick undimensioned value, got {result}'
+          print('dimension rule engine OK')
+          "
+
+      - name: Build check
+        run: |
+          pip install build
+          python -m build --sdist --wheel --no-isolation
+          ls dist/

@@ -5,14 +5,36 @@ build-backend = "hatchling.build"
 [project]
 name = "sec-xbrl-duckdb"
 version = "0.1.0"
+description = "SEC EDGAR XBRL ingestion into local DuckDB — fetch filings, parse XBRL, normalize financials, validate against yfinance"
+readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "wblarsen" },
+]
+keywords = ["sec", "edgar", "xbrl", "duckdb", "finance", "financial-data"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
     "requests>=2.31",
     "duckdb>=1.1",
     "lxml>=5.0",
     "python-dotenv>=1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/wblarsen/sec-xbrl-duckdb"
+Repository = "https://github.com/wblarsen/sec-xbrl-duckdb"
+"Bug Tracker" = "https://github.com/wblarsen/sec-xbrl-duckdb/issues"
 
 [project.optional-dependencies]
 validate = [

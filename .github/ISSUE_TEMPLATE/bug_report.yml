@@ -1,0 +1,46 @@
+name: Bug report
+description: Something is broken or producing wrong data
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: check that `SEC_USER_AGENT` is set and your network can reach `data.sec.gov`.
+
+  - type: input
+    id: command
+    attributes:
+      label: Command run
+      placeholder: "sec-xbrl company AAPL"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour (include full traceback if available)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "pip show sec-xbrl-duckdb | grep Version"
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "python --version"
+    validations:
+      required: true
